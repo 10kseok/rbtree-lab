@@ -38,7 +38,7 @@ void delete_rbtree(rbtree *t)
   free(t);
 }
 
-node_t *left_rotate(rbtree *t, node_t *x) 
+void left_rotate(rbtree *t, node_t *x) 
 {                         
     node_t *y = x->right; 
     x->right = y->left;   
@@ -59,10 +59,10 @@ node_t *left_rotate(rbtree *t, node_t *x)
     y->left = x;   
     x->parent = y; 
 
-    return t->root;
+    return;
 }
 
-node_t *right_rotate(rbtree *t, node_t *x)
+void right_rotate(rbtree *t, node_t *x)
 { 
     node_t *y = x->left;
     x->left = y->right;
@@ -81,7 +81,7 @@ node_t *right_rotate(rbtree *t, node_t *x)
     y->right = x;
     x->parent = y;
 
-    return t->root;
+    return ; 
 }
 
 
@@ -215,7 +215,6 @@ node_t *rbtree_max(const rbtree *t)
 
   while (cur_node->right != t->nil)
     cur_node = cur_node->right;
-
   return cur_node;
 }
 
