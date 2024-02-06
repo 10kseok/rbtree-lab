@@ -35,9 +35,20 @@ void rbtree_erase_transplant(rbtree *t, node_t *u, node_t *v)
   v->parent = u->parent;
 }
 
-void delete_rbtree(rbtree *t)
-{
-  // TODO: reclaim the tree nodes's memory
+void delete_node(node_t *node, node_t *sentinel_node) {
+  if (node == sentinel_node) {
+    return;
+  }
+  
+  delete_node(node->left, sentinel_node);
+  delete_node(node->right, sentinel_node);
+
+  free(node);
+}
+
+void delete_rbtree(rbtree *t) {
+  delete_node(t->root, t->nil);
+  free(t->nil);
   free(t);
 }
 
