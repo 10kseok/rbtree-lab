@@ -91,11 +91,11 @@ void rbtree_insert_fixup(rbtree *t, node_t *p)
   {
     if (p->parent == p->parent->parent->left)
     {
-      node_t *y = p->parent->parent->right;
-      if (y->color == RBTREE_RED)
+      node_t *uncle = p->parent->parent->right;
+      if (uncle->color == RBTREE_RED)
       {
         p->parent->color = RBTREE_BLACK;
-        y->color = RBTREE_BLACK;
+        uncle->color = RBTREE_BLACK;
         p->parent->parent->color = RBTREE_RED;
         p = p->parent->parent;
       }
@@ -321,26 +321,26 @@ void rbtree_erase_fixup(rbtree *t, node_t *fixup_start_node)
 int rbtree_erase(rbtree *t, node_t *p)
 {
   node_t *target_node = p;
-  node_t *x;
+  node_t *will_remove_node;
   color_t target_node_orginal_color = target_node->color;
   if (p->left == t->nil)
   {
-    x = p->right;
+    will_remove_node = p->right;
     rbtree_erase_transplant(t, p, p->right);
   }
   else if (p->right == t->nil)
   {
-    x = p->left;
+    will_remove_node = p->left;
     rbtree_erase_transplant(t, p, p->left);
   }
   else
   {
     target_node = node_min(p->right, t->nil);
     target_node_orginal_color = target_node->color;
-    x = target_node->right;
+    will_remove_node = target_node->right;
     if (target_node->parent == p)
     {
-      x->parent = target_node;
+      will_remove_node->parent = target_node;
     }
     else
     {
@@ -354,7 +354,7 @@ int rbtree_erase(rbtree *t, node_t *p)
     target_node->color = p->color;
   }
   if (target_node_orginal_color == RBTREE_BLACK)
-    rbtree_erase_fixup(t, x);
+    rbtree_erase_fixup(t, will_remove_node);
   free(p);
   return 0;
 }
@@ -367,8 +367,7 @@ void inorder_traverse(node_t *p, key_t *arr, int *index, node_t *sentinel_node, 
   inorder_traverse(p->left, arr, index, sentinel_node, n);
   if (*index < n)
   {
-    arr[*index] = p->key;
-    (*index)++;
+    arr[(*index)++] = p->key;
   }
   inorder_traverse(p->right, arr, index, sentinel_node, n);
 }
